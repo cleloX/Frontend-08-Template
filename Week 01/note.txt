@@ -1,0 +1,6 @@
+已经完成课前5步，but在manjaro中配置ssh时报错ssh: connect to host gmail.com port 22: Connection refused。
+
+解决方案：按照网上方法进行启动ssh服务
+结果：未解决
+
+
