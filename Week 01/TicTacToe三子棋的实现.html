@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    *{
+      border: 0;
+      margin: 0;
+      padding: 0;
+    }
+    .body{
+      width: 350px;
+      height: 350px;
+  
+    }
+    .cell{
+      width: 100px;
+      height: 100px;
+      background-color: red;
+      margin: 0 5px 5px 0;
+      /* border: white 1px; */
+      display: inline-block;
+      vertical-align:middle;
+      font-size: 100px;
+      line-height: 80px;
+      text-align: center;
+    }
+  
+    .tip{
+      margin: 30px 0 0 60px;
+      font-size: 32px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="body"></div>
+  <div class="tip">轮到<span class="now" style="margin: 0 5px;font-size: 50px;color:red">o</span>落子了</div>
+  <script>
+    let pattern = [
+      [0,0,0],
+      [0,0,0],
+      [0,0,0]
+    ]
+    let color = 1
+    let box = document.querySelector('.body')
+    let now = document.querySelector('.now')
+    for (let i = 0; i < 3; i++) {
+      for (let j = 0; j < 3; j++) {
+        let cell = document.createElement('div')
+        cell.className = 'cell'
+        box.appendChild(cell)
+        cell.addEventListener('click',function(){ return move(i,j,cell) } )
+      }
+    }
+
+
+    
+    
+
+    function move(i,j,cell){
+      console.log(i,j)
+      if(! pattern[i][j]){
+        color = 2 / color
+         pattern[i][j] = color
+        console.log( pattern)
+        cell.style.backgroundColor = 'green'
+        isWin(i,j)
+        cell.innerText =  pattern[i][j] == 1 ? 'x' :  pattern[i][j] == 2 ? 'o' : ''
+        now.innerText =  pattern[i][j] == 2 ? 'x' :  pattern[i][j] == 1 ? 'o' : ''
+      }else{
+        alert('此处不可落子！！')
+        
+      }
+    }
+
+    function isWin(i,j){
+      let flag = false
+        if(i == j &&  pattern[0][0] ==  pattern[1][1] &&  pattern[0][0] ==  pattern[2][2]) flag = true
+        if(i + j == 2 &&  pattern[0][2] ==  pattern[1][1] &&  pattern[0][2] ==  pattern[2][0]) flag = true
+        if( pattern[i][0] ==  pattern[i][1] &&  pattern[i][0] ==  pattern[i][2] ||
+            pattern[0][j] ==  pattern[1][j] &&  pattern[0][j] ==  pattern[2][j]){
+            flag = true
+        }
+
+        if(flag){
+          let winner =  pattern[i][j] == 1 ? 'x' :  pattern[i][j] == 2 ? 'o' : '' 
+          alert(winner + '方获胜')
+          document.querySelector('.tip').innerText = '已结束，'+ winner + ' 方获胜！'
+        }
+
+        if(! pattern.join(',').includes('0')) {
+          alert('和棋！！·')
+          document.querySelector('.tip').innerText = '已结束，双方和棋！'
+        }
+    }
+  </script>
+</body>
+</html>
