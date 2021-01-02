@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    *{
+      border: 0;
+      padding: 0;
+      margin: 0;
+    }
+    
+    .body{
+      width: 801px;
+      display:flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      flex:1;
+      align-content: space-between;    
+      position: fixed;
+      left: 50%;
+      transform: translate(-50%,0);
+    }
+    .cell{
+      height: 7px;
+      width: 7px;
+      border-bottom: 1px white solid;
+      border-right: 1px white solid;
+      /* margin-bottom: 1px; */
+      background-color: rgb(141, 135, 135);
+    }
+    .format{
+      float: left;
+      width: 50%;
+      margin:300px 0 0 -420px;
+      text-align: right;
+    } 
+    .save{
+      float: right;
+      width: 50%;
+      margin:300px -420px 0 0;
+      text-align: left;
+    }
+    button{
+      border: 2px rgb(0, 0, 0) solid;
+      font-size: 1.5rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="format"><button onclick="format()">clear</button></div>
+  <div class="save"><button onclick="save()">Save</button></div>
+  <div class="body"></div>
+  <script src="../3寻路-通过异步编程可视化寻路算法/breadth-first.js"></script>
+  <script src="../4寻路-处理路径问题/4-breadth-first.js"></script>
+  <script>
+    function save(){
+      map = JSON.stringify(map)
+      localStorage.setItem('map',map)
+    }
+    function format(){
+      
+      // map = map.map(() => 0)
+      // map = JSON.stringify(map)
+      // localStorage.setItem('map',map)
+      localStorage.removeItem('map')
+      location.reload()
+    }
+    // console.log(typeof localStorage.getItem('map'))
+    let box = document.querySelector('.body')
+    let map = localStorage.getItem('map') ? JSON.parse(localStorage.getItem('map'))  : Array(10000).fill(0)
+    for (let i = 0; i < 100; i++) {
+      for (let j = 0; j < 100; j++) {
+        let cell = document.createElement('div')
+        // cell.className = 'cell'
+        cell.classList.add('cell')
+        if(map[100*i + j] == 1) cell.style.backgroundColor = 'white'
+        else cell.style.backgroundColor = 'grey'
+        
+        cell.addEventListener('mousemove', (e) => {
+          if(mousedown){
+            if(clear){
+              map[100*i + j] = 0
+              cell.style.backgroundColor = 'grey'
+            }else{
+              map[100*i + j] = 1
+              cell.style.backgroundColor = 'white'
+            }
+          }
+        })
+        box.appendChild(cell)
+      }
+      
+    }
+    let mousedown = false
+    let clear = false
+    document.addEventListener('mousedown',(e) => {
+      mousedown = true
+      if(e.which == 3 || e.which == 2) clear = true
+    })
+    document.addEventListener('mouseup',() => {
+      mousedown = clear = false
+    })
+    document.addEventListener('contextmenu', (e) => {
+      e.preventDefault()
+    })
+    // path(map,[0,0],[50,50])
+    // console.log(findPath(map,[0,0],[50,50]))
+  </script>
+</body>
+</html>
