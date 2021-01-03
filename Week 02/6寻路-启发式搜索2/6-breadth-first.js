@@ -1,3 +1,4 @@
+  
   function sleep(time){
     return new Promise((resolve, reject) => {setTimeout(resolve,time)})
   }
@@ -6,10 +7,15 @@
 
   //广度优先算法的实现
   async function findPath(map, start, end){
-    
-    let queue = [start]
+    bodyBox.children[100*end[0]+end[1]].style.backgroundColor = 'green'
+    function distance(point){
+      // console.log('point',point)
+      return (point[0] - end[0]) ** 2 + (point[1] - end[1]) ** 2
+    }
+    let queue = new Sorted([start],(a,b) => distance(a) - distance(b))
+    // let queue = [start] 
     let table = Object.create(map)
-    console.log(table)
+    // console.log(table)
     async function insert(x, y, pre){
       if(x>99 || x<0 ||  y<0 || y>99) return
       if(map[100*x+y]) return
@@ -17,14 +23,15 @@
       bodyBox.children[100*x+y].style.backgroundColor = 'rgb(141, 155, 193)'
       map[100*x+y] = 2
       table[100*x+y] = pre
-      queue.push([x,y])
+      queue.give([x,y])
+      // queue.push([x,y])
 
     }
 
     while(queue.length){
-      let now = queue.shift()
+      let now = queue.take()
+      // let now = queue.shift()
       let [x,y] = now
-      // console.log(now)
       if(now[0] == end[0] && now[1] == end[1]) {
         let path = []
         bodyBox.children[100*x+y].style.backgroundColor = 'rgb(141, 200, 200)'
@@ -33,7 +40,6 @@
           path.push(table[100*x+y])
           bodyBox.children[100*x+y].style.backgroundColor = 'rgb(141, 200, 200)'
         }
-        bodyBox.children[100*end[0]+end[1]].style.backgroundColor = 'black'
         return path
 
       }
