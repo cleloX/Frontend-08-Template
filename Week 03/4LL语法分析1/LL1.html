@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script src="../3LL词法分析/LL.js"></script>
+  <script>
+    let source = []
+    for (let token of tokenize('3 * 4 / 2')) {
+      if (token.type !== 'Whitespace' && token.type !== 'LineTerminator') {
+        source.push(token)
+      }
+    }
+
+    // 语法分析
+    function Expression (tokens) {
+    }
+
+    // 加法
+    function AdditiveExpression (source) {
+    }
+
+    // 乘法
+    function MultiplicativeExpression (source) {
+      if (source[0].type === 'Number') {
+        let node = {
+          type: 'MultiplicativeExpression',
+          children: [source[0]]
+        }
+        source[0] = node
+        return MultiplicativeExpression(source)
+      }
+      if (source[0].type === 'MultiplicativeExpression' && source[1] && source[1].type === '*') {
+        let node = {
+          type: 'MultiplicativeExpression',
+          operator: '*',
+          children: []
+        }
+        // 组成乘法表达式
+        node.children.push(source.shift())
+        node.children.push(source.shift())
+        node.children.push(source.shift())
+        source.unshift(node)
+        return MultiplicativeExpression(source)
+      }
+      if (source[0].type === 'MultiplicativeExpression' && source[1] && source[1].type === '/') {
+        let node = {
+          type: 'MultiplicativeExpression',
+          operator: '/',
+          children: []
+        }
+        // 组成乘法表达式
+        node.children.push(source.shift())
+        node.children.push(source.shift())
+        node.children.push(source.shift())
+        source.unshift(node)
+        return MultiplicativeExpression(source)
+      }
+      if (source[0].type === 'MultiplicativeExpression') {
+        return source[0]
+      }
+      return MultiplicativeExpression(source) 
+    }
+
+    console.log(MultiplicativeExpression(source))
+  </script>
+</body>
+</html>
