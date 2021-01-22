@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    let obj = {
+    name: 'tz',
+    age: 22
+  }
+  // 储存回调函数，使用时循环调用即可
+  let callbacks = []
+  function effect(callback){
+    callbacks.push(callback)
+  }
+  
+  effect((obj, prop, val) => {
+    console.log(`现在正在监听的对象是${obj},${prop}=${val}`, obj);
+  })
+  
+  function reactive(object){
+    return new Proxy(object,{
+      //参数分别为：监听的对象、键、值
+      set(obj, prop, val){
+        obj[prop] = val
+        for (const cbk of callbacks) {
+          cbk(obj, prop, val)
+        }
+        return obj.prop
+      },
+      get(obj, prop){
+        return obj[prop]
+      }
+    })
+  }
+  
+  let proxy = reactive(obj)
+  
+  
+  
+  // 存在问题,性能问题：当有100个不同场景下的callback，使用一次proxy时候需要执行100个callback函数（真实情况只需要某一个或者几个）
+  // 待解决问题：能在特定时候时候调用某一个callback函数
+  
+  </script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    .draggable{
+      display: inline-block;
+      width: 100px;
+      height: 100px;
+      border-radius: 50px;
+      background-color: black;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    第一步创建一个range实例:
+
+    var range=document.createRange();
+
+  第二步选择一个范围:
+
+   如果只是简单选择一个dom节点，可以使用selectNode和selectNodeContents方法，只需要在range上调用方法，传入要选择的节点即可，这两个方法都没有返回值，其中               selectNode是选择整个节点，而selectNodeContents则是选择节点中包含的元素。如果选择的是一个文本节点，那么这两个方法返回相同。
+
+range.selectNode() 
+
+range.selectContents();
+
+ 如果是较复杂的选择，可以使用setStartBefore,setStartAfter,setEndBefore,setEndAfter这一组api，这一组api可以实现更加复杂一点的范围选择，方法都接收一个参数，即要选择的范围的dom节点，通常需要两个方法一起使用来决定一个范围，其中setStartBefore（node）表示将范围起点设置到node之前，setStartAfter（node）表示将范围起点设置到node之后，setEndBefore（node）表示将范围结束点设置到node之前，setEndAfter（node）表示将范围结束点设置到node之后，例如：
+
+复制代码
+<!-- <div id="contain">
+      <ul id="list">
+          <li class="data" id="list1">dfsdfsdf2341</li>
+          <li class="mydata myname" >2</li>
+          <li class="newdata">3</li>
+          <li class="htmldata" id="list2">4234234234dsfs</li>
+      </ul>
+  </div>
+<script>
+var range1 = document.createRange();
+var range2 = document.createRange();
+var firstEle=document.getElementById("link1");
+var ele=document.getElementById("list1").firstChild;
+var ele1=document.getElementById("list2");
+range1.setStartAfter(ele1);
+range1.setStartBefore(ele)；
+</script> -->
+
+复制代码
+这样就选择了整个ul里面的所有的li。
+
+第三种是使用setStart和setEnd这两个api。这两个api都接受两个参数，第一个参数是要选择的节点，第二个参数是偏移量，即setStart(node,startOffset),setEnd(node,endOffset),这两个api能更加精确的控制范围，最适合用来选择文本节点，比如：
+
+复制代码
+ <!-- <script>
+  var range1 = document.createRange();
+  var range2 = document.createRange();
+  var firstEle=document.getElementById("link1");
+  var ele=document.getElementById("list1").firstChild;
+  var ele1=document.getElementById("list2");
+  range1.setStart(ele,0);
+  range1.setEnd(ele,ele.length-1);
+  </script> -->
+复制代码
+
+  </div>
+  <div class="draggable"></div>
+  <script src="./drag.js"></script>
+  <script src="./range.js"></script>
+  <script>
+    let draggable = document.querySelector('.draggable')
+    // drag(draggable)
+    let container = document.querySelector('.container')
+    range(draggable, container)
+  </script>
+</body>
+</html>

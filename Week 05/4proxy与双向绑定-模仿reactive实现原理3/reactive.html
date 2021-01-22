@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    // 实现reactive的核心思想：收集依赖、设置依赖触发时机并触发依赖(在需要的时候触发依赖)
+    // 局限：必须先调用get, 以后才能监听到set变化
+  
+  
+    let obj = {
+    name: 'tz',
+    age: 22
+  }
+  let usedReactives = []
+  
+  let proxy = reactive(obj)
+  
+  // 使用map做二层包装：
+    //第一层：用来确定是哪一个object触发，即{key:object，val：effect（依赖）属性的集合}
+    //第二层：用来确定是哪一个属性触发，即{key：属性名，val：callback}
+  let callbacks = new Map()
+  function effect(callback){
+    // callbacks.push(callback)
+  
+    usedReactives = []  // 避免全局污染，每次调用effect时候，只需要保证当前effect内部的object被监听到
+    callback()          // 通过回调函数，触发object的getter。暂时理解为，要在effect里面通过函数参数形式注册对象的属性
+    usedReactives.forEach(arr => {
+      if(!callbacks.has(arr[0])){  
+        callbacks.set(arr[0], new Map())
+      }
+      if(!callbacks.get(arr[0]).has(arr[1])){
+        callbacks.get(arr[0]).set(arr[1], [])
+      }
+      callbacks.get(arr[0]).get(arr[1]).push(callback)
+    })
+  
+  }
+  
+  effect((obj, prop, val) => {
+    console.log(proxy.age)
+    console.log(`现在正在监听的对象是${obj},${prop}=${val}`, obj);
+  })
+  
+  function reactive(object){
+    return new Proxy(object,{
+      //参数分别为：监听的对象、键、值
+      set(obj, prop, val){
+        obj[prop] = val
+        if(callbacks.get(obj)){
+          if(callbacks.get(obj).get(prop))
+            for (const cbk of callbacks.get(obj).get(prop)) {
+              cbk(obj, prop, val)
+            }
+        }
+        return obj.prop
+      },
+      get(obj, prop){
+        usedReactives.push([obj, prop])      // 收集依赖
+        return obj[prop]
+      }
+    })
+  }
+  
+  
+  
+  
+  
+  // 存在问题：无法监听级联，如proxy.age.a
+  
+  </script>
+</body>
+</html>
