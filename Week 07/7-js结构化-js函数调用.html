@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div id="mountNode"></div>
+  <script src="https://gw.alipayobjects.com/os/lib/antv/g6/4.1.7/dist/g6.min.js"></script>
+  <script>
+    function renderG6(data) {
+      const treeGraph = new G6.TreeGraph({
+        container: "mountNode",
+        width: 1600,
+        height: 1000,
+        layout: {
+          type: "compactBox",
+          direction: "LR", 
+          divisions: 5,
+          ordering: 'degree',
+          angleRatio: 1,
+        },
+      });
+      treeGraph.data(data); // 读取 Step 2 中的数据源到图上
+      treeGraph.render(); // 渲染图
+      treeGraph.fitView();
+    }
+
+    function getObject() {
+      const names = ["Object", "Function", "Array", "Number", "parseFloat", "parseInt", "Infinity", "NaN", "undefined", "Boolean", "String", "Symbol", "Date", "Promise", "RegExp", "Error", "EvalError", "RangeError", "ReferenceError", "SyntaxError", "TypeError", "URIError", "globalThis", "JSON", "Math", "console", "Intl", "ArrayBuffer", "Uint8Array", "Int8Array", "Uint16Array", "Int16Array", "Uint32Array", "Int32Array", "Float32Array", "Float64Array", "Uint8ClampedArray", "BigUint64Array", "BigInt64Array", "DataView", "Map", "BigInt", "Set", "WeakMap", "WeakSet", "Proxy", "Reflect", "decodeURI", "decodeURIComponent", "encodeURI", "encodeURIComponent", "escape", "unescape", "eval", "isFinite", "isNaN", "Option", "Image", "Audio", "webkitURL", "webkitRTCPeerConnection", "webkitMediaStream", "WebKitMutationObserver", "WebKitCSSMatrix", "XPathResult", "XPathExpression", "XPathEvaluator", "XMLSerializer", "XMLHttpRequestUpload", "XMLHttpRequestEventTarget", "XMLHttpRequest"]
+      // console.log(names);
+      const map = new Map();
+      for (let name of names) {
+        if (window[name]?.prototype) {
+          let prop = window[name].prototype.__proto__;
+          // console.log(prop);
+          if (prop) {
+            if (!map.has(prop)) {
+              map.set(prop, []);
+            }
+            if (!map.get(prop).includes(window[name])) {
+              map.get(prop).push(window[name]);
+            }
+          }
+        }
+      }
+      // console.log(map);
+      function getChildren(root) {
+        if (map.has(root)) {
+          return map
+                    .get(root)
+                    .map(node => ({
+                      id: node.name,
+                      label: node.name,
+                      children: getChildren(node.prototype),
+                    }))
+        }
+        return [];
+      }
+
+      return {
+        id: "Object",
+        label: "Object",
+        children: getChildren(Object.prototype),
+      };
+    }
+
+    const objects = getObject();
+    // console.log(objects);
+    renderG6(objects);
+  </script>
+</body>
+</html>

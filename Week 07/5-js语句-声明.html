@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    // /**
+//  * 预处理机制：
+//  * 在执行语句之前，会将所有的变量声明进行预处理，放到自己对应的作用域
+//  * 
+// */
+// {
+//   var a = 1
+//   void function(){
+//     a = 2
+//     return;
+//     var a
+//   }()
+//   console.log(a);
+// } // 1
+// // 预处理，函数作用域内预处理声明了var a，所以 函数内的 “a = 2” 不能改变外部的a = 1
+
+
+// {
+//   var a = 1
+//   void function(){
+//     a = 2
+//     return;
+//     let a
+//   }()
+//   console.log(a);
+// } // 报错
+// // 预处理，函数作用域内预处理声明了let a，所以 函数内的 “a = 2” 不能改变外部的a = 1，并且使用let，在声明之前无法使用
+
+
+
+
+
+/**
+ * 作用域：
+ * 代码里面从哪里到哪里的作用
+*/
+{
+  var a = 1
+  void function(){
+    a = 2
+    {
+      var a
+    }
+  }()
+  console.log(a);
+} // 1
+// 预处理，函数作用域内预处理声明了var a 全局的，所以 函数内的 “a = 2” 不能改变外部的a = 1,
+
+
+{
+  var a = 1
+  void function(){
+    a = 2
+    {
+      let a
+    }
+  }()
+  console.log(a);
+} // 2
+// 预处理，函数作用域内预处理声明了let a 在{}内，所以 函数内的 “a = 2” 改变外部的a = 1
+  </script>
+</body>
+</html>
