@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script type=""></script>
+  <script src="./Request.js">
+    // void将function(){}从函数声明变成表达式，可代替的还有()、！、+、-
+void function(){
+  const request = new Request({
+    method: 'post',
+    headers:{
+      'Content-type': 'application/x-www-form-urlencoded'
+    },
+    body:{
+      name:'tz',
+      age: 22,
+      url: 'http://www.aa.com'
+    }
+  }) 
+
+  let response = request.send()
+  console.log(response);
+}()
+  </script>
+</body>
+</html>
