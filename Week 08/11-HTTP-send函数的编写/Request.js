@@ -20,7 +20,8 @@ class Request{
   }
   toString(){
     return `${this.method} ${this.path} HTTP/1.1\r
-${Object.keys(this.headers).map(key => `${key}: ${this.headers[key]}`).join('\r\n')}\r\n
+${Object.keys(this.headers).map(key => `${key}: ${this.headers[key]}`).join('\r\n')}
+
 ${this.bodyText}`
   }
 
@@ -34,7 +35,7 @@ ${this.bodyText}`
         connection = net.createConnection({
           port: this.port,
           host: this.host
-        }, function() {
+        }, () => {
           connection.write(this.toString())
         })
       }
